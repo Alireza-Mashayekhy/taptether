@@ -27,6 +27,29 @@ export default function Home() {
       </div>
       <div className="font-bold text-3xl text-center">0.000000</div>
       <div className="text-xl text-center">0.000000</div>
+      <div className="flex justify-center items-center">
+        <div className="relative w-2/3">
+          <Image
+            src="/next.svg"
+            alt="token"
+            width={500}
+            height={500}
+            className="w-full aspect-square bg-gray-200 rounded-full"
+          />
+          <span
+            className="w-[120%] h-[120%] absolute -left-[10%] -top-[10%] bg-blue-50 shadow-blue-200 rounded-full -z-[1]"
+            style={{ boxShadow: "0px 0px 20px 0px #bfdbfe" }}
+          />
+          <span
+            className="w-[140%] h-[140%] absolute -left-[20%] -top-[20%] bg-blue-50 shadow-blue-200 rounded-full -z-[2]"
+            style={{ boxShadow: "0px 0px 20px 0px #bfdbfe" }}
+          />
+          <span
+            className="w-[160%] h-[160%] absolute -left-[30%] -top-[30%] bg-blue-50 shadow-blue-200 rounded-full -z-[3]"
+            style={{ boxShadow: "0px 0px 20px 0px #bfdbfe" }}
+          />
+        </div>
+      </div>
     </div>
   );
 }
