@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
-import BottomSheet from '@/components/BottomSheet';
+import BottomNav from '@/components/BottomNav';
+import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
     title: 'Create Next App',
@@ -16,8 +16,9 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <div className="px-5 py-10 pb-20">{children}</div>
-                <BottomSheet />
+                <Toaster position="top-center" />
+                <div className="overflow-hidden">{children}</div>
+                <BottomNav />
             </body>
         </html>
     );

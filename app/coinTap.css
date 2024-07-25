@@ -1,0 +1,30 @@
+.number {
+    position: absolute;
+    /* left: 50%; */
+    /* transform: translateX(-50%); */
+    font-size: 20px;
+    opacity: 1;
+    transition: all 0.7s ease-out;
+    z-index: 11;
+}
+
+.number2 {
+    position: absolute;
+    /* left: 50%; */
+    /* transform: translateX(-50%); */
+    transform: translateY(-20px);
+    font-size: 20px;
+    opacity: 1;
+    transition: all 0.7s ease-out;
+    z-index: 11;
+}
+
+.number.animate {
+    transform: translate(0px, -150px);
+    opacity: 0;
+}
+
+.number2.animate {
+    transform: translate(0px, -170px);
+    opacity: 0;
+}
