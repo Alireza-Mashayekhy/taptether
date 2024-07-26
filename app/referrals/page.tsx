@@ -1,5 +1,4 @@
 'use client';
-import toast from 'react-hot-toast';
 import { GoPlus } from 'react-icons/go';
 import { LuCopy, LuRefreshCw } from 'react-icons/lu';
 

@@ -113,7 +113,7 @@ export default function Mine() {
                         USDT: you will receive a 78% return and your deposit
                         back after 15 days.
                     </div>
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 pb-20">
                         {[...new Array(10)].map((item) => {
                             return (
                                 <MineCard

@@ -18,9 +18,23 @@ export default function Home() {
     const [isSheetOpen, setSheet] = useState(false);
 
     const coinRef = useRef<HTMLInputElement>(null);
+    const coinImage = useRef<HTMLImageElement>(null);
 
     const coinTaped = (e: any) => {
         if (energy) {
+            if (e.clientX < window.innerWidth / 2 && coinImage.current) {
+                coinImage.current.style.transform = 'rotateY(20deg)';
+                setTimeout(() => {
+                    if (coinImage.current)
+                        coinImage.current.style.transform = 'rotateY(0deg)';
+                }, 100);
+            } else if (coinImage.current) {
+                coinImage.current.style.transform = 'rotateY(-20deg)';
+                setTimeout(() => {
+                    if (coinImage.current)
+                        coinImage.current.style.transform = 'rotateY(0deg)';
+                }, 100);
+            }
             setEnergy(energy - 1);
             setCount(count + profitPerClick);
             setCount2(count2 + profitPerClick2);
@@ -135,7 +149,7 @@ export default function Home() {
                             {count.toFixed(6)}
                         </div>
                     </div>
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="flex items-center justify-center gap-2 z-10">
                         <Image
                             src="/secondCoin.png"
                             alt="profitHourCoin"
@@ -153,7 +167,8 @@ export default function Home() {
                                 alt="token"
                                 width={500}
                                 height={500}
-                                className="w-full aspect-square rounded-full relative z-[10]"
+                                ref={coinImage}
+                                className="w-full aspect-square rounded-full relative z-[10] transition duration-[100ms]"
                                 onClick={coinTaped}
                             />
                             <span
@@ -176,7 +191,7 @@ export default function Home() {
                             />
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 fixed bottom-24">
+                    <div className="flex items-center gap-2 fixed bottom-24 z-20">
                         <AiFillThunderbolt color="#26a17b" />
                         {energy} / 1000
                     </div>
