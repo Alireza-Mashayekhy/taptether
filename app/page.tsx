@@ -11,9 +11,9 @@ export default function Home() {
     const [energy, setEnergy] = useState(1000);
     const [count, setCount] = useState(0);
     const [count2, setCount2] = useState(0);
-    const [profitPerClick, setProfitPerClick] = useState(0.000037);
+    const [profitPerClick, setProfitPerClick] = useState(0);
     const [profitPerHour, setProfitPerHour] = useState(0);
-    const [profitPerClick2, setProfitPerClick2] = useState(0);
+    const [profitPerClick2, setProfitPerClick2] = useState(0.000037);
     const [profitPerHour2, setProfitPerHour2] = useState(0);
     const [isSheetOpen, setSheet] = useState(false);
 
@@ -40,18 +40,18 @@ export default function Home() {
             setCount2(count2 + profitPerClick2);
             const newNumber = document.createElement('div');
             const newNumber2 = document.createElement('div');
-            newNumber.classList.add('number');
+            newNumber.classList.add('number2');
             newNumber.innerText = profitPerClick.toString();
-            newNumber2.classList.add('number2');
+            newNumber2.classList.add('number');
             newNumber2.innerText = profitPerClick2.toString();
             newNumber.style.top = `${
-                e.clientY - (coinRef.current?.offsetTop || 0)
+                e.clientY - (coinRef.current?.offsetTop || 0) - 100
             }px`;
             newNumber.style.left = `${
                 e.clientX - (coinRef.current?.offsetLeft || 0)
             }px`;
             newNumber2.style.top = `${
-                e.clientY - (coinRef.current?.offsetTop || 0)
+                e.clientY - (coinRef.current?.offsetTop || 0) - 100
             }px`;
             newNumber2.style.left = `${
                 e.clientX - (coinRef.current?.offsetLeft || 0)
