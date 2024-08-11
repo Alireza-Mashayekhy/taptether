@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiFillThunderbolt } from "react-icons/ai";
 import { FaRegUser } from "react-icons/fa6";
 import "./coinTap.css";
@@ -12,7 +12,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axiosInstance";
-import axios from "axios";
+import { useDebounce } from "use-debounce";
 
 const queryClient = new QueryClient();
 
@@ -25,30 +25,63 @@ export default function App() {
 }
 
 function Home() {
-  const [energy, setEnergy] = useState(1000);
-  const [count, setCount] = useState(0);
-  const [count2, setCount2] = useState(0);
-  const [profitPerClick, setProfitPerClick] = useState(0);
-  const [profitPerHour, setProfitPerHour] = useState(0);
-  const [profitPerClick2, setProfitPerClick2] = useState(0.000037);
-  const [profitPerHour2, setProfitPerHour2] = useState(0);
+  const [energy, setEnergy] = useState(0);
+  const [green, setGreen] = useState(0);
+  const [greenDebounce] = useDebounce(green, 1000);
+  const [gold, setGold] = useState(0);
+  const [goldDebounce] = useDebounce(gold, 1000);
+  const [greenProfitPerClick, setGreenProfitPerClick] = useState(0);
+  const [greenProfitPerHour, setGreenProfitPerHour] = useState(0);
+  const [goldProfitPerClick, setGoldProfitPerClick] = useState(0.000037);
+  const [goldProfitPerHour, setGoldProfitPerHour] = useState(0);
   const [isSheetOpen, setSheet] = useState(false);
 
   const coinRef = useRef<HTMLInputElement>(null);
   const coinImage = useRef<HTMLImageElement>(null);
 
-  async function fetchTodos() {
-    const response = await axiosInstance.get("/users");
+  async function fetchUser() {
+    const response = await axiosInstance.get("/users", {
+      params: { _id: 233681995 },
+    });
     return response.data;
   }
-
+  
   const { isPending, error, data } = useQuery({
-    queryKey: ["repoData"],
-    queryFn: () => fetchTodos(),
+    queryKey: ["userData"],
+    queryFn: () => fetchUser(),
   });
 
+  useEffect(() => {
+    setEnergy(data?.energy || 0);
+    setGreen(data?.green_balance || 0);
+    setGold(data?.gold_balance || 0);
+    setGreenProfitPerHour(data?.green_profit_per_hour || 0);
+    setGreenProfitPerClick(data?.green_profit_per_click || 0);
+    setGoldProfitPerHour(data?.gold_profit_per_hour || 0);
+    setGoldProfitPerClick(data?.gold_profit_per_click || 0);
+  }, [isPending]);
+
+  async function updateUserData() {
+    const formData = new FormData();
+    formData.append("_id", "233681995");
+    formData.append("energy", energy.toString());
+    formData.append("gold_balance", gold.toString());
+    formData.append("green_balance", green.toString());
+    await axiosInstance.put("/users/", formData);
+  }
+
+  useEffect(() => {
+    if (
+      data &&
+      (greenDebounce !== data?.green_balance ||
+        goldDebounce !== data?.gold_balance)
+    ) {
+      updateUserData();
+    }
+  }, [greenDebounce, goldDebounce]);
+
   const coinTaped = (e: any) => {
-    if (energy) {
+    if (energy > 0) {
       if (e.clientX < window.innerWidth / 2 && coinImage.current) {
         coinImage.current.style.transform = "rotateY(20deg)";
         setTimeout(() => {
@@ -63,14 +96,14 @@ function Home() {
         }, 100);
       }
       setEnergy(energy - 1);
-      setCount(count + profitPerClick);
-      setCount2(count2 + profitPerClick2);
+      setGreen(green + greenProfitPerClick);
+      setGold(gold + goldProfitPerClick);
       const newNumber = document.createElement("div");
       const newNumber2 = document.createElement("div");
       newNumber.classList.add("number2");
-      newNumber.innerText = profitPerClick.toString();
+      newNumber.innerText = greenProfitPerClick.toString();
       newNumber2.classList.add("number");
-      newNumber2.innerText = profitPerClick2.toString();
+      newNumber2.innerText = goldProfitPerClick.toString();
       newNumber.style.top = `${
         e.clientY - (coinRef.current?.offsetTop || 0) - 100
       }px`;
@@ -101,9 +134,6 @@ function Home() {
     }
   };
 
-  if (isPending) return "Loading...";
-  if (error) return "An error has occurred: " + error.message;
-
   return (
     <div className="bg-secondary-1 pt-16">
       <div className="rounded-t-3xl bg-primary-1 relative pt-1">
@@ -111,7 +141,7 @@ function Home() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <FaRegUser className="w-6 h-6" />
-              <div className="text-sm">Alireza</div>
+              <div className="text-sm">{data?.user_name}</div>
             </div>
             <button
               onClick={() => setSheet(true)}
@@ -130,7 +160,7 @@ function Home() {
                   width={20}
                   height={20}
                 />
-                <div>+{profitPerClick}</div>
+                <div>+{greenProfitPerClick}</div>
               </div>
               <div className="flex items-center gap-1">
                 <Image
@@ -139,7 +169,7 @@ function Home() {
                   width={25}
                   height={25}
                 />
-                <div>+{profitPerClick2}</div>
+                <div>+{goldProfitPerClick}</div>
               </div>
             </div>
             <div className="bg-secondary-1 flex flex-col items-center gap-1 p-1 rounded-md pb-2">
@@ -151,7 +181,7 @@ function Home() {
                   width={20}
                   height={20}
                 />
-                <div>+{profitPerHour}</div>
+                <div>+{greenProfitPerHour}</div>
               </div>
               <div className="flex items-center gap-1">
                 <Image
@@ -160,7 +190,7 @@ function Home() {
                   width={25}
                   height={25}
                 />
-                <div>+{profitPerHour2}</div>
+                <div>+{goldProfitPerHour}</div>
               </div>
             </div>
           </div>
@@ -171,7 +201,7 @@ function Home() {
               width={60}
               height={60}
             />
-            <div className=" text-3xl text-center">{count.toFixed(6)}</div>
+            <div className=" text-3xl text-center">{green?.toFixed(6)}</div>
           </div>
           <div className="flex items-center justify-center gap-2 z-10">
             <Image
@@ -180,7 +210,7 @@ function Home() {
               width={40}
               height={40}
             />
-            <div className="text-xl text-center">{count2.toFixed(6)}</div>
+            <div className="text-xl text-center">{gold?.toFixed(6)}</div>
           </div>
           <div className="flex justify-center items-center pb-20">
             <div className="relative w-2/3 max-w-80" ref={coinRef}>
