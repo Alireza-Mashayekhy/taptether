@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { ReactElement, useEffect, useState } from 'react';
 import { HiOutlineHome } from 'react-icons/hi';
 import { LuSwords } from 'react-icons/lu';
@@ -16,11 +16,13 @@ export default function BottomNav() {
         icon: ReactElement;
         id: number;
     }
+    const searchParams = useSearchParams();
+
     const routes: routesType[] = [
         {
             id: 0,
             title: 'Home',
-            link: '/',
+            link: `/?user=${searchParams.get('user')}`,
             icon: (
                 <HiOutlineHome
                     color={routeIndex === 0 ? 'white' : '#b0b7b4'}
@@ -31,7 +33,7 @@ export default function BottomNav() {
         {
             id: 1,
             title: 'Mine',
-            link: '/mine',
+            link: `/mine/?user=${searchParams.get('user')}`,
             icon: (
                 <LuSwords
                     color={routeIndex === 1 ? 'white' : '#b0b7b4'}
@@ -42,7 +44,7 @@ export default function BottomNav() {
         {
             id: 2,
             title: 'Referrals',
-            link: '/referrals',
+            link: `/referrals/?user=${searchParams.get('user')}`,
             icon: (
                 <TbUsersPlus
                     color={routeIndex === 2 ? 'white' : '#b0b7b4'}
@@ -53,7 +55,7 @@ export default function BottomNav() {
         {
             id: 3,
             title: 'FAQ',
-            link: '/faq',
+            link: `/faq/?user=${searchParams.get('user')}`,
             icon: (
                 <TbMessage2
                     color={routeIndex === 3 ? 'white' : '#b0b7b4'}
@@ -65,16 +67,16 @@ export default function BottomNav() {
 
     useEffect(() => {
         switch (path) {
-            case '/':
+            case `/`:
                 setRouteIndex(0);
                 break;
-            case '/mine':
+            case `/mine`:
                 setRouteIndex(1);
                 break;
-            case '/referrals':
+            case `/referrals`:
                 setRouteIndex(2);
                 break;
-            case '/faq':
+            case `/faq`:
                 setRouteIndex(3);
                 break;
         }
