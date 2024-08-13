@@ -8,15 +8,17 @@ import {
 } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 const queryClient = new QueryClient();
 
 export default function App() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <Mine />
-        </QueryClientProvider>
+        <Suspense>
+            <QueryClientProvider client={queryClient}>
+                <Mine />
+            </QueryClientProvider>
+        </Suspense>
     );
 }
 
@@ -28,12 +30,12 @@ function Mine() {
     const [goldProfitPerClick, setGoldProfitPerClick] = useState(0);
     const [goldProfitPerHour, setGoldProfitPerHour] = useState(0);
     const [selectedCategory, setCategory] = useState(0);
+    const searchParams = useSearchParams();
 
     async function fetchRefferrals() {
         const response = await axiosInstance.get('/profits');
         return response.data;
     }
-    const searchParams = useSearchParams();
 
     const { isPending, error, data } = useQuery({
         queryKey: ['repoData'],

@@ -1,22 +1,35 @@
 'use client';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, Suspense, useEffect, useState } from 'react';
 import { HiOutlineHome } from 'react-icons/hi';
 import { LuSwords } from 'react-icons/lu';
 import { TbMessage2, TbUsersPlus } from 'react-icons/tb';
 
-export default function BottomNav() {
+const queryClient = new QueryClient();
+
+export default function App() {
+    return (
+        <Suspense>
+            <QueryClientProvider client={queryClient}>
+                <BottomNav />
+            </QueryClientProvider>
+        </Suspense>
+    );
+}
+
+function BottomNav() {
     const path = usePathname();
     const [routeIndex, setRouteIndex] = useState(0);
+    const searchParams = useSearchParams();
     interface routesType {
         title: string;
         link: string;
         icon: ReactElement;
         id: number;
     }
-    const searchParams = useSearchParams();
 
     const routes: routesType[] = [
         {

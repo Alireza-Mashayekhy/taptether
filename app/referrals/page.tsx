@@ -6,6 +6,8 @@ import {
     useQuery,
 } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import toast from 'react-hot-toast';
 import { GoPlus } from 'react-icons/go';
 import { LuCopy, LuRefreshCw } from 'react-icons/lu';
 
@@ -13,9 +15,11 @@ const queryClient = new QueryClient();
 
 export default function App() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <Referrals />
-        </QueryClientProvider>
+        <Suspense>
+            <QueryClientProvider client={queryClient}>
+                <Referrals />
+            </QueryClientProvider>
+        </Suspense>
     );
 }
 
@@ -32,6 +36,11 @@ function Referrals() {
         queryKey: ['repoData'],
         queryFn: () => fetchRefferrals(),
     });
+
+    const copyLink = () => {
+        navigator.clipboard.writeText('copyLink');
+        toast.success('link copied');
+    };
 
     return (
         <div className="bg-secondary-1 pt-16">
@@ -67,7 +76,10 @@ function Referrals() {
                         <button className="w-full bg-primary-1 text-center text-white font-semibold flex gap-2 items-center justify-center py-3 rounded-lg">
                             <GoPlus className="w-6 h-6" /> Invite a friend
                         </button>
-                        <button className="bg-primary-1 flex items-center justify-center px-3 rounded-lg">
+                        <button
+                            onClick={copyLink}
+                            className="bg-primary-1 flex items-center justify-center px-3 rounded-lg"
+                        >
                             <LuCopy className="w-6 h-6" color="white" />
                         </button>
                     </div>

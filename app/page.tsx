@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { AiFillThunderbolt } from 'react-icons/ai';
 import { FaRegUser } from 'react-icons/fa6';
 import './coinTap.css';
@@ -19,9 +19,11 @@ const queryClient = new QueryClient();
 
 export default function App() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <Home />
-        </QueryClientProvider>
+        <Suspense>
+            <QueryClientProvider client={queryClient}>
+                <Home />
+            </QueryClientProvider>
+        </Suspense>
     );
 }
 
@@ -36,11 +38,9 @@ function Home() {
     const [goldProfitPerClick, setGoldProfitPerClick] = useState(0.000037);
     const [goldProfitPerHour, setGoldProfitPerHour] = useState(0);
     const [isSheetOpen, setSheet] = useState(false);
-
+    const searchParams = useSearchParams();
     const coinRef = useRef<HTMLInputElement>(null);
     const coinImage = useRef<HTMLImageElement>(null);
-
-    const searchParams = useSearchParams();
 
     async function fetchUser() {
         const response = await axiosInstance.get('/users', {
@@ -66,7 +66,7 @@ function Home() {
 
     async function updateUserData() {
         const formData = new FormData();
-        formData.append('_id', searchParams.get('user'));
+        formData.append('_id', searchParams.get('user') || '');
         formData.append('energy', energy.toString());
         formData.append('gold_balance', gold.toString());
         formData.append('green_balance', green.toString());

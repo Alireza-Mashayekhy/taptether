@@ -1,10 +1,11 @@
 import Image from 'next/image';
 import BottomSheet from './BottomSheet';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import axiosInstance from '@/lib/axiosInstance';
 import toast from 'react-hot-toast';
 import { useSearchParams } from 'next/navigation';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 interface propsType {
     name: string;
@@ -22,7 +23,35 @@ interface propsType {
     isTapper?: boolean;
     is_upgradeable: boolean;
 }
-export default function MineCard(props: propsType) {
+
+const queryClient = new QueryClient();
+
+export default function App(props: propsType) {
+    return (
+        <Suspense>
+            <QueryClientProvider client={queryClient}>
+                <MineCard
+                    name={props.name}
+                    image={props.image}
+                    greenProfit={props.greenProfit}
+                    goldProfit={props.goldProfit}
+                    price={props.price}
+                    upgradePeriod={props.upgradePeriod}
+                    receive={props.receive}
+                    goldProfitPerHour={props.goldProfitPerHour}
+                    greenProfitPerHour={props.greenProfitPerHour}
+                    interest={props.interest}
+                    deposit={props.deposit}
+                    description={props.description}
+                    is_upgradeable={props.is_upgradeable}
+                    isTapper={props.isTapper}
+                />
+            </QueryClientProvider>
+        </Suspense>
+    );
+}
+
+function MineCard(props: propsType) {
     const [isSheetShow, setSheet] = useState(false);
     const searchParams = useSearchParams();
 
@@ -30,7 +59,7 @@ export default function MineCard(props: propsType) {
         if (props.is_upgradeable) {
             try {
                 const formData = new FormData();
-                formData.append('_id', searchParams.get('user'));
+                formData.append('_id', searchParams.get('user') || '');
                 formData.append('name', props.name);
                 await axiosInstance.post('/profits/', formData);
             } catch (error: any) {
