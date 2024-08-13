@@ -84,7 +84,7 @@ function Home() {
     }, [greenDebounce, goldDebounce]);
 
     const coinTaped = (e: any) => {
-        if (energy > 0) {
+        if (energy > 0 && (greenProfitPerClick > 0 || goldProfitPerClick > 0)) {
             if (e.clientX < window.innerWidth / 2 && coinImage.current) {
                 coinImage.current.style.transform = 'rotateY(20deg)';
                 setTimeout(() => {

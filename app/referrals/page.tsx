@@ -32,15 +32,32 @@ function Referrals() {
         return response.data;
     }
 
-    const { isPending, error, data } = useQuery({
+    async function fetchLink() {
+        const response = await axiosInstance.get('/invite-code', {
+            params: { _id: searchParams.get('user') },
+        });
+        return response.data;
+    }
+
+    const { isPending, error, data, refetch } = useQuery({
         queryKey: ['repoData'],
         queryFn: () => fetchRefferrals(),
     });
 
+    const { data: inviteLink } = useQuery({
+        queryKey: ['linkData'],
+        queryFn: () => fetchLink(),
+    });
+
     const copyLink = () => {
-        navigator.clipboard.writeText('copyLink');
+        navigator.clipboard.writeText(inviteLink?.invite_code);
         toast.success('link copied');
     };
+
+    interface referralType {
+        first_name: string;
+        last_name: string;
+    }
 
     return (
         <div className="bg-secondary-1 pt-16">
@@ -59,23 +76,44 @@ function Referrals() {
                             <div className="text-xs font-semibold">
                                 List of your friends (0)
                             </div>
-                            <button>
+                            <button
+                                onClick={() => {
+                                    refetch();
+                                    toast.success('refreshed successfully');
+                                }}
+                            >
                                 <LuRefreshCw />
                             </button>
                         </div>
                         <div className="bg-secondary-1 mt-3 py-10 rounded-xl">
                             <div className="text-center text-2xl font-semibold">
-                                0 friends!
+                                {data?.length} friends!
                             </div>
                             <div className="text-center text-xs font-semibold text-secondary-2">
                                 You and your friend will receive bonuses
                             </div>
                         </div>
+                        <div className="flex flex-col gap-3 mt-3">
+                            {data?.map((referral: referralType) => {
+                                return (
+                                    <div
+                                        key={referral.first_name}
+                                        className="bg-secondary-1 p-2 rounded-lg text-center"
+                                    >
+                                        {referral.first_name}{' '}
+                                        {referral.last_name}
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                     <div className="fixed bottom-[85px] flex gap-2 w-[93%] left-[3.5%]">
-                        <button className="w-full bg-primary-1 text-center text-white font-semibold flex gap-2 items-center justify-center py-3 rounded-lg">
+                        <a
+                            href={inviteLink?.invite_code}
+                            className="w-full bg-primary-1 text-center text-white font-semibold flex gap-2 items-center justify-center py-3 rounded-lg"
+                        >
                             <GoPlus className="w-6 h-6" /> Invite a friend
-                        </button>
+                        </a>
                         <button
                             onClick={copyLink}
                             className="bg-primary-1 flex items-center justify-center px-3 rounded-lg"
