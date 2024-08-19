@@ -35,7 +35,9 @@ function BottomNav() {
         {
             id: 0,
             title: 'Home',
-            link: `/?user=${searchParams.get('user')}`,
+            link: `/?user=${searchParams.get('user')}&token=${searchParams.get(
+                'token'
+            )}`,
             icon: (
                 <HiOutlineHome
                     color={routeIndex === 0 ? 'white' : '#b0b7b4'}
@@ -46,7 +48,9 @@ function BottomNav() {
         {
             id: 1,
             title: 'Mine',
-            link: `/mine/?user=${searchParams.get('user')}`,
+            link: `/mine/?user=${searchParams.get(
+                'user'
+            )}&token=${searchParams.get('token')}`,
             icon: (
                 <LuSwords
                     color={routeIndex === 1 ? 'white' : '#b0b7b4'}
@@ -57,7 +61,9 @@ function BottomNav() {
         {
             id: 2,
             title: 'Referrals',
-            link: `/referrals/?user=${searchParams.get('user')}`,
+            link: `/referrals/?user=${searchParams.get(
+                'user'
+            )}&token=${searchParams.get('token')}`,
             icon: (
                 <TbUsersPlus
                     color={routeIndex === 2 ? 'white' : '#b0b7b4'}
@@ -68,7 +74,9 @@ function BottomNav() {
         {
             id: 3,
             title: 'FAQ',
-            link: `/faq/?user=${searchParams.get('user')}`,
+            link: `/faq/?user=${searchParams.get(
+                'user'
+            )}&token=${searchParams.get('token')}`,
             icon: (
                 <TbMessage2
                     color={routeIndex === 3 ? 'white' : '#b0b7b4'}

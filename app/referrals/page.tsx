@@ -27,14 +27,20 @@ function Referrals() {
     const searchParams = useSearchParams();
     async function fetchRefferrals() {
         const response = await axiosInstance.get('/referrals', {
-            params: { _id: searchParams.get('user') },
+            params: {
+                _id: searchParams.get('user'),
+                token: searchParams.get('token'),
+            },
         });
         return response.data;
     }
 
     async function fetchLink() {
         const response = await axiosInstance.get('/invite-code', {
-            params: { _id: searchParams.get('user') },
+            params: {
+                _id: searchParams.get('user'),
+                token: searchParams.get('token'),
+            },
         });
         return response.data;
     }
@@ -74,7 +80,7 @@ function Referrals() {
                     <div>
                         <div className="flex justify-between items-center">
                             <div className="text-xs font-semibold">
-                                List of your friends (0)
+                                List of your friends ({data?.length})
                             </div>
                             <button
                                 onClick={() => {

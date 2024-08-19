@@ -60,6 +60,7 @@ function MineCard(props: propsType) {
             try {
                 const formData = new FormData();
                 formData.append('_id', searchParams.get('user') || '');
+                formData.append('token', searchParams.get('token') || '');
                 formData.append('name', props.name);
                 await axiosInstance.post('/profits/', formData);
             } catch (error: any) {
@@ -80,13 +81,17 @@ function MineCard(props: propsType) {
                 }`}
             >
                 <div className="flex gap-3">
-                    <div className="bg-white flex items-center justify-center aspect-square rounded-lg p-2 min-w-9">
+                    <div
+                        className={`bg-white flex items-center justify-center aspect-square rounded-lg p-2 ${
+                            props.isTapper ? 'min-w-[52px]' : 'min-w-9'
+                        }`}
+                    >
                         {props.image && (
                             <Image
                                 alt={props.name}
-                                src={props.image}
-                                width={25}
-                                height={25}
+                                src={props.image || ''}
+                                width={props.isTapper ? 30 : 25}
+                                height={props.isTapper ? 30 : 25}
                             />
                         )}
                     </div>

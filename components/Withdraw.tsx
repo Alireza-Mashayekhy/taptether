@@ -6,8 +6,10 @@ import { IoCopyOutline } from 'react-icons/io5';
 import BottomSheet from './BottomSheet';
 import { RiArrowDownSFill, RiErrorWarningLine } from 'react-icons/ri';
 import { FaCheck } from 'react-icons/fa6';
+import axiosInstance from '@/lib/axiosInstance';
+import { useSearchParams } from 'next/navigation';
 
-export default function Withdraw() {
+export default function Withdraw({ balance }: { balance: number }) {
     const [TabIndex, setIndex] = useState(0);
     return (
         <div className="px-3 py-5 flex flex-col gap-5">
@@ -43,22 +45,61 @@ export default function Withdraw() {
                     History
                 </button>
             </div>
-            {tabContent(TabIndex)}
+            {tabContent(balance, TabIndex)}
         </div>
     );
 }
 
-function tabContent(index: number) {
+function tabContent(balance: number, index: number) {
     const [isOpenSheet, setSheet] = useState(false);
     const [chain, setChain] = useState('binance');
-    const [withDrawChain, setWithDrawChain] = useState('binance');
+    const [depositValue, setDepositValue] = useState(0);
+    const [withDrawAddress, setWithDrawAddress] = useState('');
     const [withDraw, setWithDraw] = useState(0);
+    const searchParams = useSearchParams();
 
     const address = useRef<HTMLDivElement>(null);
     const copyText = () => {
         if (address.current)
             navigator.clipboard.writeText(address.current.innerHTML);
         toast.success('Successful');
+    };
+
+    const deposit = async () => {
+        if (!depositValue || !chain) {
+            toast.error('please fill all fields.');
+        } else if (depositValue < 0.1) {
+            console.log(depositValue);
+            toast.error('Min. deposit is 0.1');
+        } else {
+            const formData = new FormData();
+            formData.append('_id', searchParams.get('user') || '');
+            formData.append('token', searchParams.get('token') || '');
+            formData.append('price_amount', depositValue.toString());
+            formData.append('price_currency', chain.toString());
+            await axiosInstance
+                .post('/create-payment/', formData)
+                .then((res) => {
+                    window.location.assign(res?.data?.invoice_url);
+                });
+        }
+    };
+    const withdrawFunc = async () => {
+        if (!withDraw || !chain || !withDrawAddress) {
+            toast.error('please fill all fields.');
+        } else if (withDraw < 1) {
+            toast.error('Min. withdrawal is 1');
+        } else if (withDraw > balance) {
+            toast.error('your request is more than your balance.');
+        } else {
+            const formData = new FormData();
+            formData.append('_id', searchParams.get('user') || '');
+            formData.append('token', searchParams.get('token') || '');
+            formData.append('price_amount', withDraw.toString());
+            formData.append('price_currency', chain.toString());
+            formData.append('address ', withDrawAddress);
+            await axiosInstance.post('/create-payout/', formData);
+        }
     };
     if (index === 0) {
         return (
@@ -158,7 +199,7 @@ function tabContent(index: number) {
                     )}
                     <RiArrowDownSFill />
                 </button>
-                <div className="flex gap-1 mt-3">
+                {/* <div className="flex gap-1 mt-3">
                     <div
                         ref={address}
                         className="bg-secondary-1 p-3 rounded-xl text-xs w-full"
@@ -171,8 +212,20 @@ function tabContent(index: number) {
                     >
                         <IoCopyOutline color="#b0b7b4" className="w-6 h-6" />
                     </div>
-                </div>
+                </div> */}
+                <input
+                    className="bg-secondary-1 outline-none text-2xl w-full rounded-xl p-3"
+                    placeholder="0"
+                    type="number"
+                    onChange={(e: any) => setDepositValue(e.target.value)}
+                />
                 <div className="text-secondary-2">Min. deposit: 0.1 USDT</div>
+                <button
+                    onClick={deposit}
+                    className="bg-primary-1 p-3 text-white rounded-xl"
+                >
+                    Deposit
+                </button>
             </div>
         );
     } else if (index === 1) {
@@ -285,9 +338,9 @@ function tabContent(index: number) {
                         <div>
                             <div className="text-xl">USDT</div>
                             <div className="text-[10px] text-secondary-2 flex items-center gap-2 whitespace-nowrap">
-                                Balance: 0.000020
+                                Balance: {balance.toFixed(4)}
                                 <button
-                                    onClick={() => setWithDraw(0.00002)}
+                                    onClick={() => setWithDraw(balance)}
                                     className="text-[8px] rounded-full border border-secondary-2 px-1"
                                 >
                                     MAX
@@ -341,6 +394,9 @@ function tabContent(index: number) {
                     <input
                         placeholder="Enter your address"
                         className="bg-secondary-1 rounded-xl p-4 text-sm outline-none"
+                        onChange={(e) => {
+                            setWithDrawAddress(e.target.value);
+                        }}
                     />
                     <div className="bg-[#ff1b51] flex items-center gap-3 text-white p-3 py-2 rounded-xl text-xs">
                         <RiErrorWarningLine className="w-6 h-6" />
@@ -349,7 +405,10 @@ function tabContent(index: number) {
                     <div className="text-sm text-secondary-2 my-3">
                         Min. withdrawal: 1 USDT
                     </div>
-                    <button className="w-full py-3 text-white bg-primary-1 text-center rounded-xl">
+                    <button
+                        onClick={withdrawFunc}
+                        className="w-full py-3 text-white bg-primary-1 text-center rounded-xl"
+                    >
                         Withdraw
                     </button>
                 </div>

@@ -44,7 +44,10 @@ function Home() {
 
     async function fetchUser() {
         const response = await axiosInstance.get('/users', {
-            params: { _id: searchParams.get('user') },
+            params: {
+                _id: searchParams.get('user'),
+                token: searchParams.get('token'),
+            },
         });
         return response.data;
     }
@@ -67,6 +70,7 @@ function Home() {
     async function updateUserData() {
         const formData = new FormData();
         formData.append('_id', searchParams.get('user') || '');
+        formData.append('token', searchParams.get('token') || '');
         formData.append('energy', energy.toString());
         formData.append('gold_balance', gold.toString());
         formData.append('green_balance', green.toString());
@@ -83,8 +87,22 @@ function Home() {
         }
     }, [greenDebounce, goldDebounce]);
 
+    const energyInterval = () => {
+        setEnergy((counter) => (counter < 1000 ? counter + 1 : 1000));
+    };
+    useEffect(() => {
+        const timerId = setInterval(() => {
+            energyInterval();
+        }, 1000);
+
+        return () => clearInterval(timerId);
+    }, []);
+
     const coinTaped = (e: any) => {
-        if (energy > 0 && (greenProfitPerClick > 0 || goldProfitPerClick > 0)) {
+        if (
+            energy >= 1 &&
+            (greenProfitPerClick > 0 || goldProfitPerClick > 0)
+        ) {
             if (e.clientX < window.innerWidth / 2 && coinImage.current) {
                 coinImage.current.style.transform = 'rotateY(20deg)';
                 setTimeout(() => {
@@ -262,7 +280,7 @@ function Home() {
             </div>
             {isSheetOpen && (
                 <BottomSheet close={() => setSheet(false)}>
-                    <Withdraw />
+                    <Withdraw balance={green} />
                 </BottomSheet>
             )}
         </div>

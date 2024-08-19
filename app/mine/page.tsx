@@ -44,7 +44,10 @@ function Mine() {
 
     async function fetchUser() {
         const response = await axiosInstance.get('/users', {
-            params: { _id: searchParams.get('user') },
+            params: {
+                _id: searchParams.get('user'),
+                token: searchParams.get('token'),
+            },
         });
         return response.data;
     }
