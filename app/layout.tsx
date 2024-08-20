@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import BottomNav from '@/components/BottomNav';
 import { Toaster } from 'react-hot-toast';
+import { useEffect } from 'react';
 
 export const metadata: Metadata = {
     title: 'Create Next App',
@@ -13,10 +14,12 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    if (window?.Telegram) {
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
-    }
+    useEffect(() => {
+        const app = (window as any).Telegram?.WebApp;
+        if (app) {
+            app.ready();
+        }
+    }, []);
     return (
         <html lang="en">
             <head>

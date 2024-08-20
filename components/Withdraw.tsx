@@ -90,7 +90,7 @@ function tabContent(balance: number, index: number) {
             formData.append('_id', searchParams.get('user') || '');
             formData.append('token', searchParams.get('token') || '');
             formData.append('price_amount', depositValue.toString());
-            formData.append('price_currency', 'Tether');
+            formData.append('price_currency', 'usdterc20');
             await axiosInstance
                 .post('/create-payment/', formData)
                 .then((res) => {
