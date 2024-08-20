@@ -392,7 +392,7 @@ function tabContent(balance: number, index: number) {
                         Empty list
                     </div>
                 ) : (
-                    data?.payments?.map((item) => {
+                    data?.payments?.map((item: any) => {
                         return (
                             <div className="w-full p-3 bg-secondary-1 rounded-xl border border-secondary-2 items-center grid grid-cols-3">
                                 <div>{item.payment_id}</div>
