@@ -250,7 +250,7 @@ function Home() {
                                 height={500}
                                 ref={coinImage}
                                 className="w-full aspect-square rounded-full relative z-[10] transition duration-[100ms]"
-                                onClick={coinTaped}
+                                onTouchStart={coinTaped}
                             />
                             <span
                                 className="w-[110%] h-[110%] absolute -left-[5%] -top-[5%] bg-blue-50 shadow-blue-200 rounded-full z-[1]"

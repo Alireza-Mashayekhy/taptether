@@ -8,6 +8,7 @@ import { RiArrowDownSFill, RiErrorWarningLine } from 'react-icons/ri';
 import { FaCheck } from 'react-icons/fa6';
 import axiosInstance from '@/lib/axiosInstance';
 import { useSearchParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Withdraw({ balance }: { balance: number }) {
     const [TabIndex, setIndex] = useState(0);
@@ -52,11 +53,24 @@ export default function Withdraw({ balance }: { balance: number }) {
 
 function tabContent(balance: number, index: number) {
     const [isOpenSheet, setSheet] = useState(false);
-    const [chain, setChain] = useState('binance');
+    const [chain, setChain] = useState('ton');
     const [depositValue, setDepositValue] = useState(0);
     const [withDrawAddress, setWithDrawAddress] = useState('');
     const [withDraw, setWithDraw] = useState(0);
     const searchParams = useSearchParams();
+
+    const { isPending, error, data } = useQuery({
+        queryKey: ['userHistory'],
+        queryFn: async () => {
+            const response = await axiosInstance.post('/payment-history/', {
+                // params: {
+                _id: searchParams.get('user'),
+                token: searchParams.get('token'),
+                // },
+            });
+            return response.data;
+        },
+    });
 
     const address = useRef<HTMLDivElement>(null);
     const copyText = () => {
@@ -66,7 +80,7 @@ function tabContent(balance: number, index: number) {
     };
 
     const deposit = async () => {
-        if (!depositValue || !chain) {
+        if (!depositValue) {
             toast.error('please fill all fields.');
         } else if (depositValue < 0.1) {
             console.log(depositValue);
@@ -76,7 +90,7 @@ function tabContent(balance: number, index: number) {
             formData.append('_id', searchParams.get('user') || '');
             formData.append('token', searchParams.get('token') || '');
             formData.append('price_amount', depositValue.toString());
-            formData.append('price_currency', chain.toString());
+            formData.append('price_currency', 'Tether');
             await axiosInstance
                 .post('/create-payment/', formData)
                 .then((res) => {
@@ -104,7 +118,7 @@ function tabContent(balance: number, index: number) {
     if (index === 0) {
         return (
             <div className="flex flex-col gap-3">
-                {isOpenSheet && (
+                {/* {isOpenSheet && (
                     <BottomSheet close={() => setSheet(false)}>
                         <div className="p-3 py-5">
                             <div className="text-lg font-semibold mb-3">
@@ -168,36 +182,20 @@ function tabContent(balance: number, index: number) {
                             </button>
                         </div>
                     </BottomSheet>
-                )}
+                )} */}
                 <div className="text-sm">
                     Send any amount of USDT to your deposit address
                 </div>
-                <button
-                    onClick={() => setSheet(true)}
-                    className="bg-secondary-1 p-3 rounded-xl text-xl font-semibold text-secondary-2 flex justify-between items-center"
-                >
-                    {chain === 'binance' ? (
-                        <div className="flex items-center gap-3">
-                            <Image
-                                src="/bsc.png"
-                                alt="binance"
-                                width={32}
-                                height={32}
-                            />
-                            Binance Smart Chain
-                        </div>
-                    ) : (
-                        <div className="flex items-center gap-3">
-                            <Image
-                                src="/trx.png"
-                                alt="binance"
-                                width={32}
-                                height={32}
-                            />
-                            Tron
-                        </div>
-                    )}
-                    <RiArrowDownSFill />
+                <button className="bg-secondary-1 p-3 rounded-xl text-xl font-semibold text-secondary-2 flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                        <Image
+                            src="/coin.svg"
+                            alt="binance"
+                            width={32}
+                            height={32}
+                        />
+                        Tether
+                    </div>
                 </button>
                 {/* <div className="flex gap-1 mt-3">
                     <div
@@ -238,34 +236,6 @@ function tabContent(balance: number, index: number) {
                                 <div className="text-lg font-semibold mb-3">
                                     Select chain
                                 </div>
-                                <button
-                                    onClick={() => {
-                                        setSheet(false);
-                                        setChain('binance');
-                                    }}
-                                    className="w-full p-3 rounded-xl text-xl flex justify-between items-center"
-                                >
-                                    <div
-                                        className={`flex items-center gap-3 ${
-                                            chain === 'binance'
-                                                ? 'text-black'
-                                                : 'text-secondary-2'
-                                        }`}
-                                    >
-                                        <Image
-                                            src="/bsc.png"
-                                            alt="binance"
-                                            width={32}
-                                            height={32}
-                                        />
-                                        Binance Smart Chain
-                                    </div>
-                                    {chain === 'binance' && (
-                                        <div className="bg-primary-1 text-white p-1 rounded-lg">
-                                            <FaCheck className="w-4 h-4" />
-                                        </div>
-                                    )}
-                                </button>
                                 <button
                                     onClick={() => {
                                         setSheet(false);
@@ -417,9 +387,27 @@ function tabContent(balance: number, index: number) {
     } else if (index === 2) {
         return (
             <div className="flex flex-col gap-3">
-                <div className="bg-secondary-1 text-2xl font-semibold text-center py-14 rounded-xl">
-                    Empty list
-                </div>
+                {!data?.payments?.length ? (
+                    <div className="bg-secondary-1 text-2xl font-semibold text-center py-14 rounded-xl">
+                        Empty list
+                    </div>
+                ) : (
+                    data?.payments?.map((item) => {
+                        return (
+                            <div className="w-full p-3 bg-secondary-1 rounded-xl border border-secondary-2 items-center grid grid-cols-3">
+                                <div>{item.payment_id}</div>
+                                <div>{item?.payment_date.split('T')[0]}</div>
+                                <div className="flex justify-end">
+                                    {item?.is_paid && (
+                                        <div className="px-2 py-1 text-white text-sm rounded-lg bg-primary-1">
+                                            paid
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })
+                )}
             </div>
         );
     }
