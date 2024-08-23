@@ -2,7 +2,6 @@
 import './globals.css';
 import BottomNav from '@/components/BottomNav';
 import { Toaster } from 'react-hot-toast';
-import { useEffect } from 'react';
 
 export default function RootLayout({
     children,

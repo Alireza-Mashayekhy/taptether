@@ -155,16 +155,14 @@ function Home() {
             });
         }
     };
-
-    useEffect(() => {
-        window.addEventListener('load', () => {
+    if (typeof window !== 'undefined') {
+        useEffect(() => {
             const app = (window as any).Telegram?.WebApp;
             if (app) {
                 app.ready();
             }
-        });
-    }, []);
-
+        }, []);
+    }
     return (
         <>
             <Script src="https://telegram.org/js/telegram-web-app.js" />
