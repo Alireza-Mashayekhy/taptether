@@ -157,10 +157,12 @@ function Home() {
     };
 
     useEffect(() => {
-        const app = (window as any).Telegram?.WebApp;
-        if (app) {
-            app.ready();
-        }
+        window.addEventListener('load', () => {
+            const app = (window as any).Telegram?.WebApp;
+            if (app) {
+                app.ready();
+            }
+        });
     }, []);
 
     return (
