@@ -12,7 +12,7 @@ export default function RootLayout({
         <html lang="en">
             <body>
                 <Toaster position="top-center" />
-                <div className="overflow-hidden">{children}</div>
+                <div className="overflow-hidden min-h-screen">{children}</div>
                 <BottomNav />
             </body>
         </html>

@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function faq() {
     return (
-        <div className="bg-secondary-1 pt-16 pb-20">
+        <div className="bg-secondary-1 pt-16 pb-20 h-screen">
             <div className="rounded-t-3xl bg-primary-1 relative">
                 <div className="py-5 px-3 text-white">
                     <div className="text-2xl font-semibold relative z-10">

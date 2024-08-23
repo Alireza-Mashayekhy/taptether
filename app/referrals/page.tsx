@@ -66,9 +66,9 @@ function Referrals() {
     }
 
     return (
-        <div className="bg-secondary-1 pt-16">
-            <div className="rounded-t-3xl bg-primary-1 relative pt-1">
-                <div className="py-8 px-3 bg-white rounded-t-3xl flex flex-col gap-5 ">
+        <div className="bg-secondary-1 pt-16 h-screen">
+            <div className="rounded-t-3xl bg-primary-1 relative pt-1 h-screen">
+                <div className="py-8 px-3 bg-white rounded-t-3xl flex flex-col gap-5 h-screen">
                     <div>
                         <div className="text-2xl font-semibold">
                             Invite friends!

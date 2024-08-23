@@ -39,9 +39,12 @@ function Home() {
     const [goldProfitPerClick, setGoldProfitPerClick] = useState(0.000037);
     const [goldProfitPerHour, setGoldProfitPerHour] = useState(0);
     const [isSheetOpen, setSheet] = useState(false);
+    const [startTap, setStartTap] = useState(new Date());
     const searchParams = useSearchParams();
     const coinRef = useRef<HTMLInputElement>(null);
     const coinImage = useRef<HTMLImageElement>(null);
+    const [firstGoldValue, setFirstGoldValue] = useState(0);
+    const [firstGreenValue, setFirstGreenValue] = useState(0);
 
     async function fetchUser() {
         const response = await axiosInstance.get('/users', {
@@ -69,12 +72,26 @@ function Home() {
     }, [isPending]);
 
     async function updateUserData() {
+        const startTime =
+            Date.parse(new Date().toString()) - Date.parse(startTap.toString());
+        let click_count = 0;
+        if (greenProfitPerClick > 0) {
+            click_count = Math.ceil(
+                (green - firstGreenValue) / greenProfitPerClick
+            );
+        } else if (goldProfitPerClick > 0) {
+            click_count = Math.ceil(
+                (gold - firstGoldValue) / goldProfitPerClick
+            );
+        }
         const formData = new FormData();
         formData.append('_id', searchParams.get('user') || '');
         formData.append('token', searchParams.get('token') || '');
         formData.append('energy', energy.toString());
         formData.append('gold_balance', gold.toString());
         formData.append('green_balance', green.toString());
+        formData.append('start_time', startTime.toString());
+        formData.append('click_count', click_count.toString());
         await axiosInstance.put('/users/', formData);
     }
 
@@ -104,6 +121,11 @@ function Home() {
             energy >= 1 &&
             (greenProfitPerClick > 0 || goldProfitPerClick > 0)
         ) {
+            if (green == greenDebounce || gold == goldDebounce) {
+                setStartTap(new Date());
+                setFirstGoldValue(gold);
+                setFirstGreenValue(green);
+            }
             if (e.clientX < window.innerWidth / 2 && coinImage.current) {
                 coinImage.current.style.transform = 'rotateY(20deg)';
                 setTimeout(() => {
@@ -166,9 +188,9 @@ function Home() {
     return (
         <>
             <Script src="https://telegram.org/js/telegram-web-app.js" />
-            <div className="bg-secondary-1 pt-16">
-                <div className="rounded-t-3xl bg-primary-1 relative pt-1">
-                    <div className="py-8 px-3 bg-white rounded-t-3xl flex flex-col gap-5">
+            <div className="bg-secondary-1 pt-16 h-screen">
+                <div className="rounded-t-3xl bg-primary-1 relative pt-1 h-screen">
+                    <div className="py-8 px-3 bg-white rounded-t-3xl flex flex-col gap-5 h-screen">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-3">
                                 <FaRegUser className="w-6 h-6" />
@@ -263,7 +285,7 @@ function Home() {
                                     height={500}
                                     ref={coinImage}
                                     className="w-full aspect-square rounded-full relative z-[10] transition duration-[100ms]"
-                                    onTouchStart={coinTaped}
+                                    onClick={coinTaped}
                                 />
                                 <span
                                     className="w-[110%] h-[110%] absolute -left-[5%] -top-[5%] bg-blue-50 shadow-blue-200 rounded-full z-[1]"
