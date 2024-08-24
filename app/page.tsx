@@ -31,9 +31,9 @@ export default function App() {
 function Home() {
     const [energy, setEnergy] = useState(0);
     const [green, setGreen] = useState(0);
-    const [greenDebounce] = useDebounce(green, 1000);
+    const [greenDebounce] = useDebounce(green, 500);
     const [gold, setGold] = useState(0);
-    const [goldDebounce] = useDebounce(gold, 1000);
+    const [goldDebounce] = useDebounce(gold, 500);
     const [greenProfitPerClick, setGreenProfitPerClick] = useState(0);
     const [greenProfitPerHour, setGreenProfitPerHour] = useState(0);
     const [goldProfitPerClick, setGoldProfitPerClick] = useState(0.000037);
@@ -96,13 +96,17 @@ function Home() {
     }
 
     useEffect(() => {
-        if (
-            data &&
-            (greenDebounce !== data?.green_balance ||
-                goldDebounce !== data?.gold_balance)
-        ) {
-            updateUserData();
-        }
+        setTimeout(() => {
+            if (
+                data &&
+                greenDebounce &&
+                goldDebounce &&
+                (greenDebounce !== data?.green_balance ||
+                    goldDebounce !== data?.gold_balance)
+            ) {
+                updateUserData();
+            }
+        }, 500);
     }, [greenDebounce, goldDebounce]);
 
     const energyInterval = () => {
@@ -126,17 +130,12 @@ function Home() {
                 setFirstGoldValue(gold);
                 setFirstGreenValue(green);
             }
-            if (e.clientX < window.innerWidth / 2 && coinImage.current) {
-                coinImage.current.style.transform = 'rotateY(20deg)';
+            if (coinImage.current) {
+                coinImage.current.style.transform = 'scale(.95)';
                 setTimeout(() => {
-                    if (coinImage.current)
-                        coinImage.current.style.transform = 'rotateY(0deg)';
-                }, 100);
-            } else if (coinImage.current) {
-                coinImage.current.style.transform = 'rotateY(-20deg)';
-                setTimeout(() => {
-                    if (coinImage.current)
-                        coinImage.current.style.transform = 'rotateY(0deg)';
+                    if (coinImage.current) {
+                        coinImage.current.style.transform = 'scale(1)';
+                    }
                 }, 100);
             }
             setEnergy(energy - 1);
