@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { ReactEventHandler, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { IoCopyOutline } from 'react-icons/io5';
 import BottomSheet from './BottomSheet';
@@ -46,17 +46,37 @@ export default function Withdraw({ balance }: { balance: number }) {
                     History
                 </button>
             </div>
-            {tabContent(balance, TabIndex)}
+            <TabContent
+                balance={balance}
+                index={TabIndex}
+                showData={() => {
+                    setIndex(3);
+                }}
+            />
         </div>
     );
 }
 
-function tabContent(balance: number, index: number) {
+function TabContent({
+    balance,
+    index,
+    showData,
+}: {
+    balance: number;
+    index: number;
+    showData: () => void;
+}) {
     const [isOpenSheet, setSheet] = useState(false);
     const [chain, setChain] = useState('ton');
     const [depositValue, setDepositValue] = useState(0);
     const [withDrawAddress, setWithDrawAddress] = useState('');
     const [withDraw, setWithDraw] = useState(0);
+    const [depositData, setData] = useState({
+        pay_amount: 0,
+        pay_currency: '',
+        pay_address: '',
+    });
+    const [timer, setTimer] = useState(1200);
     const searchParams = useSearchParams();
 
     const { isPending, error, data } = useQuery({
@@ -91,10 +111,15 @@ function tabContent(balance: number, index: number) {
             formData.append('token', searchParams.get('token') || '');
             formData.append('price_amount', depositValue.toString());
             formData.append('price_currency', 'usdterc20');
+            formData.append('pay_currency', 'usdterc20');
             await axiosInstance
                 .post('/create-payment/', formData)
                 .then((res) => {
-                    window.location.assign(res?.data?.invoice_url);
+                    setData(res?.data);
+                    showData();
+                    setInterval(() => {
+                        setTimer((counter) => (counter > 0 ? counter - 1 : 0));
+                    }, 1000);
                 });
         }
     };
@@ -408,6 +433,74 @@ function tabContent(balance: number, index: number) {
                         );
                     })
                 )}
+            </div>
+        );
+    } else if (index === 3) {
+        return (
+            <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1">
+                    <div>amount</div>
+                    <div className="flex gap-2">
+                        <div className="bg-secondary-1 w-full rounded-lg p-3">
+                            {depositData?.pay_amount}
+                        </div>
+                        <div
+                            onClick={() => {
+                                navigator.clipboard.writeText(
+                                    depositData?.pay_amount.toString()
+                                );
+                                toast.success('copied successfully.');
+                            }}
+                            className="bg-secondary-1 min-w-12 w-12 flex items-center justify-center rounded-lg"
+                        >
+                            <IoCopyOutline size={20} />
+                        </div>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                    <div>address</div>
+                    <div className="flex gap-2">
+                        <div className="bg-secondary-1 w-full rounded-lg p-3 truncate">
+                            {depositData?.pay_address}
+                        </div>
+                        <div
+                            onClick={() => {
+                                navigator.clipboard.writeText(
+                                    depositData?.pay_address.toString()
+                                );
+                                toast.success('copied successfully.');
+                            }}
+                            className="bg-secondary-1 min-w-12 w-12 flex items-center justify-center rounded-lg"
+                        >
+                            <IoCopyOutline size={20} />
+                        </div>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                    <div>currency</div>
+                    <div className="flex gap-2">
+                        <div className="bg-secondary-1 w-full rounded-lg p-3">
+                            {depositData?.pay_currency}
+                        </div>
+                        <div
+                            onClick={() => {
+                                navigator.clipboard.writeText(
+                                    depositData?.pay_currency.toString()
+                                );
+                                toast.success('copied successfully.');
+                            }}
+                            className="bg-secondary-1 min-w-12 w-12 flex items-center justify-center rounded-lg"
+                        >
+                            <IoCopyOutline size={20} />
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-primary-1 text-white w-full rounded-lg p-3 text-center">
+                    {Math.floor(timer / 60) < 10
+                        ? '0' + Math.floor(timer / 60)
+                        : Math.floor(timer / 60)}{' '}
+                    : {timer % 60 < 10 ? '0' + (timer % 60) : timer % 60}
+                </div>
             </div>
         );
     }

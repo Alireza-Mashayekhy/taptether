@@ -31,9 +31,9 @@ export default function App() {
 function Home() {
     const [energy, setEnergy] = useState(0);
     const [green, setGreen] = useState(0);
-    const [greenDebounce] = useDebounce(green, 500);
+    const [greenDebounce] = useDebounce(green, 200);
     const [gold, setGold] = useState(0);
-    const [goldDebounce] = useDebounce(gold, 500);
+    const [goldDebounce] = useDebounce(gold, 200);
     const [greenProfitPerClick, setGreenProfitPerClick] = useState(0);
     const [greenProfitPerHour, setGreenProfitPerHour] = useState(0);
     const [goldProfitPerClick, setGoldProfitPerClick] = useState(0.000037);
@@ -187,9 +187,9 @@ function Home() {
     return (
         <>
             <Script src="https://telegram.org/js/telegram-web-app.js" />
-            <div className="bg-secondary-1 pt-16 h-screen">
-                <div className="rounded-t-3xl bg-primary-1 relative pt-1 h-screen">
-                    <div className="py-8 px-3 bg-white rounded-t-3xl flex flex-col gap-5 h-screen">
+            <div className="bg-secondary-1 pt-16 min-h-screen">
+                <div className="rounded-t-3xl bg-primary-1 relative pt-1 min-h-screen">
+                    <div className="py-8 px-3 bg-white rounded-t-3xl flex flex-col gap-5 min-h-screen">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-3">
                                 <FaRegUser className="w-6 h-6" />

@@ -83,9 +83,9 @@ function Mine() {
     }
 
     return (
-        <div className="bg-secondary-1 pt-16 h-full h-screen">
-            <div className="rounded-t-3xl bg-primary-1 relative pt-1 h-screen">
-                <div className="py-8 px-3 flex flex-col gap-5 bg-white rounded-t-3xl h-screen">
+        <div className="bg-secondary-1 pt-16 h-full min-h-screen">
+            <div className="rounded-t-3xl bg-primary-1 relative pt-1 min-h-screen">
+                <div className="py-8 px-3 flex flex-col gap-5 bg-white rounded-t-3xl min-h-screen">
                     <div className="grid grid-cols-2 gap-5 text-sm">
                         <div className="bg-secondary-1 flex flex-col items-center gap-1 p-1 rounded-md pb-2">
                             <div className="text-amber-400">
