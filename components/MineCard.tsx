@@ -63,6 +63,7 @@ function MineCard(props: propsType) {
                 formData.append('token', searchParams.get('token') || '');
                 formData.append('name', props.name);
                 await axiosInstance.post('/profits/', formData);
+                toast.success('upgraded successfully.');
             } catch (error: any) {
                 if (error.response.status === 400) {
                     toast.error('profit price is higher than the balance');
