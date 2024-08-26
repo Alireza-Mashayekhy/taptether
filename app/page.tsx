@@ -186,7 +186,10 @@ function Home() {
     }
     return (
         <>
-            <Script src="https://telegram.org/js/telegram-web-app.js" />
+            <Script
+                src="https://telegram.org/js/telegram-web-app.js"
+                strategy="beforeInteractive"
+            />
             <div className="bg-secondary-1 pt-16 min-h-screen">
                 <div className="rounded-t-3xl bg-primary-1 relative pt-1 min-h-screen">
                     <div className="py-8 px-3 bg-white rounded-t-3xl flex flex-col gap-5 min-h-screen">
