@@ -265,20 +265,23 @@ function MineCard(props: propsType) {
                                     {props.deposit}
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 w-full gap-3">
-                                <button
-                                    onClick={updateCard}
-                                    className="text-sm py-0.5 bg-primary-1 rounded-lg text-white"
-                                >
-                                    BUY (8 USDT) Ton
-                                </button>
-                                <button
-                                    onClick={updateCard}
-                                    className="text-sm py-0.5 bg-primary-1 rounded-lg text-white"
-                                >
-                                    BUY (8 USDT) Internal balance
-                                </button>
-                            </div>
+                            {!!props.is_upgradeable && (
+                                <div className="grid grid-cols-2 w-full gap-3">
+                                    <button
+                                        onClick={updateCard}
+                                        className="text-sm py-0.5 bg-primary-1 rounded-lg text-white"
+                                    >
+                                        BUY ({props.price} USDT) Ton
+                                    </button>
+                                    <button
+                                        onClick={updateCard}
+                                        className="text-sm py-0.5 bg-primary-1 rounded-lg text-white"
+                                    >
+                                        BUY ({props.price} USDT) Internal
+                                        balance
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </BottomSheet>
