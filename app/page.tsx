@@ -29,10 +29,15 @@ export default function App() {
 }
 
 function Home() {
-  const [energy, setEnergy] = useState(0);
-  const [green, setGreen] = useState(0);
+  const { isPending, error, data } = useQuery({
+    queryKey: ["userData"],
+    queryFn: () => fetchUser(),
+  });
+
+  const [energy, setEnergy] = useState(data?.energy || 0);
+  const [green, setGreen] = useState(data?.green_balance || 0);
   const [greenDebounce] = useDebounce(green, 200);
-  const [gold, setGold] = useState(0);
+  const [gold, setGold] = useState(data?.gold_balance || 0);
   const [goldDebounce] = useDebounce(gold, 200);
   const [greenProfitPerClick, setGreenProfitPerClick] = useState(0);
   const [greenProfitPerHour, setGreenProfitPerHour] = useState(0);
@@ -56,12 +61,8 @@ function Home() {
     return response.data;
   }
 
-  const { isPending, error, data } = useQuery({
-    queryKey: ["userData"],
-    queryFn: () => fetchUser(),
-  });
-
   useEffect(() => {
+    console.log(data?.green_balance);
     setEnergy(data?.energy || 0);
     setGreen(data?.green_balance || 0);
     setGold(data?.gold_balance || 0);
@@ -69,7 +70,7 @@ function Home() {
     setGreenProfitPerClick(data?.green_profit_per_click || 0);
     setGoldProfitPerHour(data?.gold_profit_per_hour || 0);
     setGoldProfitPerClick(data?.gold_profit_per_click || 0);
-  }, [isPending]);
+  }, [isPending, data]);
 
   async function updateUserData() {
     const startTime =
