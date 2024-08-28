@@ -175,10 +175,13 @@ function Home() {
   };
   if (typeof window !== "undefined") {
     useEffect(() => {
-      const app = (window as any).Telegram?.WebApp;
-      if (app) {
-        app.ready();
-      }
+      setTimeout(() => {
+        console.log("opened");
+        const app = (window as any).Telegram?.WebApp;
+        if (app) {
+          app.ready();
+        }
+      }, 1000);
     }, []);
   }
   return (

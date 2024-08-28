@@ -112,7 +112,7 @@ function Referrals() {
           </div>
           <div className="fixed bottom-[85px] flex gap-2 w-[93%] left-[3.5%]">
             <a
-              href={`tg://msg?text=${inviteLink?.invite_code}`}
+              href={`tg://msg?url=${inviteLink?.invite_code}`}
               className="w-full bg-primary-1 text-center text-white font-semibold flex gap-2 items-center justify-center py-3 rounded-lg"
             >
               <GoPlus className="w-6 h-6" /> Invite a friend
