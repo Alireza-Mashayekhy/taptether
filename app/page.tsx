@@ -107,7 +107,7 @@ function Home() {
   }, [greenDebounce, goldDebounce]);
 
   const energyInterval = () => {
-    setEnergy((counter) => (counter < 1000 ? counter + 1 : 1000));
+    setEnergy((counter: number) => (counter < 1000 ? counter + 1 : 1000));
   };
   useEffect(() => {
     const timerId = setInterval(() => {
