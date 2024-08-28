@@ -15,16 +15,19 @@ import axiosInstance from "@/lib/axiosInstance";
 import { useDebounce } from "use-debounce";
 import { useSearchParams } from "next/navigation";
 import Script from "next/script";
+import { TelegramProvider } from "@/hook/useTelegram";
 
 const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <Suspense>
-      <QueryClientProvider client={queryClient}>
-        <Home />
-      </QueryClientProvider>
-    </Suspense>
+    <TelegramProvider>
+      <Suspense>
+        <QueryClientProvider client={queryClient}>
+          <Home />
+        </QueryClientProvider>
+      </Suspense>
+    </TelegramProvider>
   );
 }
 
