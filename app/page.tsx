@@ -173,17 +173,25 @@ function Home() {
       });
     }
   };
-  if (typeof window !== "undefined") {
-    useEffect(() => {
-      setTimeout(() => {
-        console.log("opened");
-        const app = (window as any).Telegram?.WebApp;
-        if (app) {
-          app.ready();
-        }
-      }, 1000);
-    }, []);
-  }
+  //   if (typeof window !== "undefined") {
+  //     useEffect(() => {
+  //       setTimeout(() => {
+  //         console.log("opened");
+  //         const app = (window as any).Telegram?.WebApp;
+  //         if (app) {
+  //           app.ready();
+  //         }
+  //       }, 1000);
+  //     }, []);
+  //   }
+  useEffect(() => {
+    const app = (window as any).Telegram?.WebApp;
+    if (app) {
+      app.ready();
+      app.expand();
+      // setWebApp(app)
+    }
+  }, []);
   return (
     <>
       <Script

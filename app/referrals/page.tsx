@@ -60,6 +60,10 @@ function Referrals() {
     toast.success("link copied");
   };
 
+  const handleInviteClick = () => {
+    window.location.href = `tg://msg/?url=${inviteLink?.invite_code}`;
+  };
+
   interface referralType {
     first_name: string;
     last_name: string;
@@ -111,12 +115,12 @@ function Referrals() {
             </div>
           </div>
           <div className="fixed bottom-[85px] flex gap-2 w-[93%] left-[3.5%]">
-            <a
-              href={`tg://msg?url=${inviteLink?.invite_code}`}
+            <div
+              onClick={handleInviteClick}
               className="w-full bg-primary-1 text-center text-white font-semibold flex gap-2 items-center justify-center py-3 rounded-lg"
             >
               <GoPlus className="w-6 h-6" /> Invite a friend
-            </a>
+            </div>
             <button
               onClick={copyLink}
               className="bg-primary-1 flex items-center justify-center px-3 rounded-lg"
