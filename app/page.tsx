@@ -65,7 +65,6 @@ function Home() {
   }
 
   useEffect(() => {
-    console.log(data?.green_balance);
     setEnergy(data?.energy || 0);
     setGreen(data?.green_balance || 0);
     setGold(data?.gold_balance || 0);
@@ -118,6 +117,20 @@ function Home() {
     }, 1000);
 
     return () => clearInterval(timerId);
+  }, []);
+  useEffect(() => {
+    const greenProfit = setInterval(() => {
+      setGreen((counter: number) => counter + greenProfitPerHour / 60 / 60);
+    }, 1000);
+
+    return () => clearInterval(greenProfit);
+  }, []);
+  useEffect(() => {
+    const goldProfit = setInterval(() => {
+      setGold((counter: number) => counter + goldProfitPerHour / 60 / 60);
+    }, 1000);
+
+    return () => clearInterval(goldProfit);
   }, []);
 
   const coinTaped = (e: any) => {
